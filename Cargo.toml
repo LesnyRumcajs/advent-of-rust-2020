@@ -13,8 +13,13 @@ lto = true
 
 [dependencies]
 itertools = "0.9"
+regex = "1.4"
+lazy_static = "1.4"
 
 [[bin]]
 name = "day1"
 path = "src/bin/day1.rs"
 
+[[bin]]
+name = "day2"
+path = "src/bin/day2.rs"
