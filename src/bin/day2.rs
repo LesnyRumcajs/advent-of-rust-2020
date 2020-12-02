@@ -25,7 +25,7 @@ impl FromStr for PolicyPassword {
         Ok(PolicyPassword {
             first: caps[1].parse()?,
             second: caps[2].parse()?,
-            character: caps[3].chars().nth(0).unwrap(),
+            character: caps[3].chars().next().unwrap(),
             pass: caps[4].to_owned(),
         })
     }
