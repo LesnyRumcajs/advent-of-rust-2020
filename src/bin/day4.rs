@@ -31,10 +31,6 @@ impl Passport {
     }
 
     fn validate(&self) -> Result<(), SimpleError> {
-        if !self.has_all_required_fields() {
-            return Err(SimpleError::new("Not all fields are filled"));
-        }
-
         if require_with!(self.birth_year, "no byr") < 1920
             || require_with!(self.birth_year, "no byr") > 2002
         {
