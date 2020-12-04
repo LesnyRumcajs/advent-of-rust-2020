@@ -15,6 +15,7 @@ lto = true
 itertools = "0.9"
 regex = "1.4"
 lazy_static = "1.4"
+simple-error = "0.2"
 
 [[bin]]
 name = "day1"
@@ -27,3 +28,7 @@ path = "src/bin/day2.rs"
 [[bin]]
 name = "day3"
 path = "src/bin/day3.rs"
+
+[[bin]]
+name = "day4"
+path = "src/bin/day4.rs"
