@@ -41,14 +41,12 @@ fn part2(input: &[String]) -> usize {
             is_new_group = true;
         } else if num == input.len() - 1 {
             result += if is_new_group {
-                HashSet::from(line.chars().collect::<HashSet<_>>()).len()
+                line.chars().collect::<HashSet<_>>().len()
             } else {
-                HashSet::from(
-                    set.intersection(&line.chars().collect())
-                        .cloned()
-                        .collect::<HashSet<_>>(),
-                )
-                .len()
+                set.intersection(&line.chars().collect())
+                    .cloned()
+                    .collect::<HashSet<_>>()
+                    .len()
             };
         } else {
             set = if is_new_group {
