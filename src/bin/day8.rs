@@ -77,7 +77,7 @@ impl Program {
             }
         };
 
-        return ExecutionStatus::OK;
+        ExecutionStatus::OK
     }
 
     fn create_mutated(&self, index: usize) -> Result<Self, SimpleError> {
