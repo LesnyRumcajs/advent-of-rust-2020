@@ -25,7 +25,7 @@ fn part2(target: i32, numbers: &[i32]) -> i32 {
         .iter()
         .enumerate()
         .filter_map(|(i, _)| find_exact_sum_of_previous(target, &numbers[..i]))
-        .nth(0)
+        .next()
         .expect("Solution not found!");
     result.0 + result.1
 }
@@ -58,8 +58,7 @@ fn is_sum_of_previous(n: i32, numbers: &[i32]) -> bool {
 
     numbers
         .iter()
-        .find(|&&num| sorted_numbers.binary_search(&&(n - num)).is_ok())
-        .is_some()
+        .any(|num| sorted_numbers.binary_search(&&(n - num)).is_ok())
 }
 
 fn read_numbers() -> Vec<i32> {
