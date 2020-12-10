@@ -54,6 +54,6 @@ fn read_adapters() -> Vec<u32> {
 
     adapters.push(0);
     adapters.push(adapters.iter().max().unwrap() + 3);
-    adapters.sort();
+    adapters.sort_unstable();
     adapters
 }
