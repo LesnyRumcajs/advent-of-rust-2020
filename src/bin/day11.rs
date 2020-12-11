@@ -50,7 +50,7 @@ impl Layout {
             } else if ch == 'L' {
                 0
             } else {
-                return self.add_occupied(curr_row, row_mod, curr_col, col_mod);
+                self.add_occupied(curr_row, row_mod, curr_col, col_mod)
             }
         }
     }
