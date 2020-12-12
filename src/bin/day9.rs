@@ -4,7 +4,7 @@ use std::io::{self, BufRead};
 const PREAMBLE_SIZE: usize = 25;
 
 fn main() {
-    let numbers = read_numbers();
+    let numbers = read_numbers(io::stdin().lock());
     let target = part1(&numbers);
     println!("Day 9, part 1: {}", target);
     println!("Day 9, part 2: {}", part2(target, &numbers));
@@ -61,11 +61,24 @@ fn is_sum_of_previous(n: i32, numbers: &[i32]) -> bool {
         .any(|num| sorted_numbers.binary_search(&&(n - num)).is_ok())
 }
 
-fn read_numbers() -> Vec<i32> {
-    io::stdin()
-        .lock()
+fn read_numbers<R: BufRead>(reader: R) -> Vec<i32> {
+    reader
         .lines()
         .filter_map(Result::ok)
         .filter_map(|i| i.parse::<i32>().ok())
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let numbers = read_numbers(BufReader::new(File::open("inputs/day9/1.txt").unwrap()));
+        let part1_solution = part1(&numbers);
+        assert_eq!(part1_solution, 177777905);
+        assert_eq!(part2(part1_solution, &numbers), 23463012);
+    }
 }
