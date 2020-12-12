@@ -2,7 +2,7 @@ use itertools::Itertools;
 use std::io::{self, BufRead};
 
 fn main() {
-    let adapters = read_adapters();
+    let adapters = read_adapters(io::stdin().lock());
     println!("Day 10, part 1: {}", part1(&adapters));
     println!("Day 10, part 2: {}", part2(&adapters));
 }
@@ -44,9 +44,8 @@ fn part2(adapters: &[u32]) -> u64 {
     result
 }
 
-fn read_adapters() -> Vec<u32> {
-    let mut adapters: Vec<u32> = io::stdin()
-        .lock()
+fn read_adapters<R: BufRead>(reader: R) -> Vec<u32> {
+    let mut adapters: Vec<u32> = reader
         .lines()
         .filter_map(Result::ok)
         .map(|v| v.parse::<u32>().unwrap())
@@ -56,4 +55,18 @@ fn read_adapters() -> Vec<u32> {
     adapters.push(adapters.iter().max().unwrap() + 3);
     adapters.sort_unstable();
     adapters
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let adapters =
+            read_adapters(BufReader::new(File::open("inputs/day10/1.txt").unwrap()));
+        assert_eq!(part1(&adapters), 2176);
+        assert_eq!(part2(&adapters), 18512297918464);
+    }
 }
