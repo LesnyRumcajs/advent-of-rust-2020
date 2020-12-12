@@ -34,7 +34,7 @@ enum Instruction {
 impl FromStr for Instruction {
     type Err = SimpleError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let action = s.chars().nth(0).unwrap();
+        let action = s.chars().next().unwrap();
         let val: i32 = s.chars().skip(1).collect::<String>().parse().unwrap();
 
         Ok(match action {
@@ -56,7 +56,7 @@ fn main() {
     println!("Day 12, part 2: {}", part2(&instructions));
 }
 
-fn part1(instructions: &Instructions) -> i32 {
+fn part1(instructions: &[Instruction]) -> i32 {
     let mut ship = Point::default();
     let mut direction = 0f64;
     for instruction in instructions.iter() {
@@ -88,7 +88,7 @@ fn part1(instructions: &Instructions) -> i32 {
     ship.x.abs() + ship.y.abs()
 }
 
-fn part2(instructions: &Instructions) -> i32 {
+fn part2(instructions: &[Instruction]) -> i32 {
     let mut ship = Point::default();
     let mut waypoint = Point { x: 10, y: 1 };
     for instruction in instructions.iter() {
