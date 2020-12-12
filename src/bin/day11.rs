@@ -1,4 +1,4 @@
-use std::io::{self, BufRead};
+use std::io::BufRead;
 
 #[derive(Clone, PartialEq)]
 struct Layout {
@@ -147,7 +147,7 @@ impl Layout {
 }
 
 fn main() {
-    let layout = read_layout();
+    let layout = read_layout(std::io::stdin().lock());
     println!("Day 11, part 1: {}", part1(&layout));
     println!("Day 11, part 2: {}", part2(&layout));
 }
@@ -172,13 +172,25 @@ fn part2(layout: &Layout) -> u32 {
     current_layout.count_occupied()
 }
 
-fn read_layout() -> Layout {
+fn read_layout<R: BufRead>(reader: R) -> Layout {
     Layout::from_lines(
-        io::stdin()
-            .lock()
+        reader
             .lines()
             .filter_map(Result::ok)
             .map(|line| line.chars().collect())
             .collect(),
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let layout = read_layout(BufReader::new(File::open("inputs/day11/1.txt").unwrap()));
+        assert_eq!(part1(&layout), 2281);
+        assert_eq!(part2(&layout), 2085);
+    }
 }
