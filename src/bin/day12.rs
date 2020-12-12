@@ -51,7 +51,7 @@ impl FromStr for Instruction {
 }
 
 fn main() {
-    let instructions = read_instructions();
+    let instructions = read_instructions(std::io::stdin().lock());
     println!("Day 12, part 1: {}", part1(&instructions));
     println!("Day 12, part 2: {}", part2(&instructions));
 }
@@ -120,11 +120,24 @@ fn part2(instructions: &[Instruction]) -> i32 {
     ship.x.abs() + ship.y.abs()
 }
 
-fn read_instructions() -> Instructions {
-    std::io::stdin()
-        .lock()
+fn read_instructions<R: BufRead>(reader: R) -> Instructions {
+    reader
         .lines()
         .filter_map(Result::ok)
         .filter_map(|l| Instruction::from_str(&l).ok())
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let instructions =
+            read_instructions(BufReader::new(File::open("inputs/day12/1.txt").unwrap()));
+        assert_eq!(part1(&instructions), 2458);
+        assert_eq!(part2(&instructions), 145117);
+    }
 }
