@@ -98,7 +98,7 @@ impl Program {
 }
 
 fn main() {
-    let program = Program::from(read_program()).unwrap();
+    let program = Program::from(read_program(io::stdin().lock())).unwrap();
     println!("Day 8, part 1: {}", part1(program.clone()));
     println!("Day 8, part 2: {}", part2(program));
 }
@@ -132,6 +132,22 @@ fn part2(program: Program) -> i64 {
     result
 }
 
-fn read_program() -> Vec<String> {
-    io::stdin().lock().lines().filter_map(Result::ok).collect()
+fn read_program<R: BufRead>(reader: R) -> Vec<String> {
+    reader.lines().filter_map(Result::ok).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let program = Program::from(read_program(BufReader::new(
+            File::open("inputs/day8/1.txt").unwrap(),
+        )))
+        .unwrap();
+        assert_eq!(part1(program.clone()), 1262);
+        assert_eq!(part2(program), 1643);
+    }
 }
