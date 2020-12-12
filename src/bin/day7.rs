@@ -37,7 +37,7 @@ impl FromStr for Rule {
 }
 
 fn main() {
-    let rules = read_rules();
+    let rules = read_rules(io::stdin().lock());
     println!("Day 7, part 1: {}", part1(&rules));
     println!("Day 7, part 2: {}", part2(&rules));
 }
@@ -72,11 +72,23 @@ fn part2(rules: &[Rule]) -> usize {
     count_bags(rules, "shiny gold") - 1
 }
 
-fn read_rules() -> Vec<Rule> {
-    io::stdin()
-        .lock()
+fn read_rules<R: BufRead>(reader: R) -> Vec<Rule> {
+    reader
         .lines()
         .filter_map(Result::ok)
         .filter_map(|l| Rule::from_str(&l).ok())
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let rules = read_rules(BufReader::new(File::open("inputs/day7/1.txt").unwrap()));
+        assert_eq!(part1(&rules), 316);
+        assert_eq!(part2(&rules), 11310);
+    }
 }

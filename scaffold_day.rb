@@ -26,6 +26,16 @@ File.open("src/bin/day#{day_nr}.rs", 'w') do |f|
     fn part2() -> i32 {
       unimplemented!();
     }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use std::{fs::File, io::BufReader};
+
+        #[test]
+        fn test_solution() {
+        }
+    }
   HEREDOC
 end
 

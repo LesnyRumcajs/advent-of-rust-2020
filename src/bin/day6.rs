@@ -60,3 +60,19 @@ fn part2(input: &[String]) -> usize {
 
     result
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let input: Vec<_> = BufReader::new(File::open("inputs/day6/1.txt").unwrap())
+            .lines()
+            .filter_map(Result::ok)
+            .collect();
+        assert_eq!(part1(&input), 6799);
+        assert_eq!(part2(&input), 3354);
+    }
+}
