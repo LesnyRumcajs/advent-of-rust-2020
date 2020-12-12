@@ -64,8 +64,7 @@ mod tests {
 
     #[test]
     fn test_solution() {
-        let adapters =
-            read_adapters(BufReader::new(File::open("inputs/day10/1.txt").unwrap()));
+        let adapters = read_adapters(BufReader::new(File::open("inputs/day10/1.txt").unwrap()));
         assert_eq!(part1(&adapters), 2176);
         assert_eq!(part2(&adapters), 18512297918464);
     }
