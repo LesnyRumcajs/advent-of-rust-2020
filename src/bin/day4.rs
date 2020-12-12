@@ -129,7 +129,7 @@ impl FromStr for Passport {
 }
 
 fn main() {
-    let passports = read_passports();
+    let passports = read_passports(io::stdin().lock());
     println!("Day 4, part 1: {}", part1(&passports));
     println!("Day 4, part 2: {}", part2(&passports));
 }
@@ -147,9 +147,9 @@ fn part2(passports: &[Passport]) -> usize {
         .count()
 }
 
-fn read_passports() -> Vec<Passport> {
+fn read_passports<R: BufRead>(reader: R) -> Vec<Passport> {
     let mut result = Vec::new();
-    let input: Vec<_> = io::stdin().lock().lines().filter_map(Result::ok).collect();
+    let input: Vec<_> = reader.lines().filter_map(Result::ok).collect();
 
     let mut buffer = String::new();
     for (num, line) in input.iter().enumerate() {
@@ -164,4 +164,17 @@ fn read_passports() -> Vec<Passport> {
     }
 
     result
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let passports = read_passports(BufReader::new(File::open("inputs/day4/1.txt").unwrap()));
+        assert_eq!(part1(&passports), 219);
+        assert_eq!(part2(&passports), 127);
+    }
 }
