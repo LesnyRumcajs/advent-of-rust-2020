@@ -47,7 +47,7 @@ impl FromStr for Seat {
 }
 
 fn main() {
-    let seats = read_seats();
+    let seats = read_seats(io::stdin().lock());
     println!("Day 5, part 1: {}", part1(&seats));
     println!("Day 5, part 2: {}", part2(&seats));
 }
@@ -68,11 +68,23 @@ fn part2(seats: &[Seat]) -> usize {
         + 1
 }
 
-fn read_seats() -> Vec<Seat> {
-    io::stdin()
-        .lock()
+fn read_seats<R: BufRead>(reader: R) -> Vec<Seat> {
+    reader
         .lines()
         .filter_map(Result::ok)
         .filter_map(|l| Seat::from_str(&l).ok())
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let seats = read_seats(BufReader::new(File::open("inputs/day5/1.txt").unwrap()));
+        assert_eq!(part1(&seats), 955);
+        assert_eq!(part2(&seats), 569);
+    }
 }
