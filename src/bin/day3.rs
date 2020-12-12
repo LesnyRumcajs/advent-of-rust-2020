@@ -1,7 +1,7 @@
 use std::io::{self, BufRead};
 
 fn main() {
-    let map = load_map();
+    let map = load_map(io::stdin().lock());
     println!("Day 3, part 1: {}", part1(&map));
     println!("Day 3, part 2: {}", part2(&map));
 }
@@ -32,6 +32,19 @@ fn traverse(map: &[String], horizontal_slope: usize, vertical_slope: usize) -> i
     trees
 }
 
-fn load_map() -> Vec<String> {
-    io::stdin().lock().lines().filter_map(Result::ok).collect()
+fn load_map<R: BufRead>(reader: R) -> Vec<String> {
+    reader.lines().filter_map(Result::ok).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{fs::File, io::BufReader};
+
+    #[test]
+    fn test_solution() {
+        let map = load_map(BufReader::new(File::open("inputs/day3/1.txt").unwrap()));
+        assert_eq!(part1(&map), 145);
+        assert_eq!(part2(&map), 3424528800);
+    }
 }
