@@ -62,7 +62,7 @@ fn read_notes<R: BufRead>(reader: R) -> Notes {
     let lines: Vec<_> = reader.lines().filter_map(Result::ok).collect();
     let earliest = lines[0].parse().unwrap();
     let buses = lines[1]
-        .split(",")
+        .split(',')
         .enumerate()
         .filter(|(_, ch)| *ch != "x")
         .map(|(i, bus)| (-(i as i64), bus.parse().unwrap()))
