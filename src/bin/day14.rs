@@ -65,11 +65,11 @@ fn apply_with_variations(num: u64, bitmask: &[u8]) -> Vec<u64> {
 
 fn bitmask_variation(bitmask: &[u8]) -> Vec<u64> {
     let mut result = Vec::new();
-    if let Some(pos) = bitmask.iter().position(|&ch| ch == 'X' as u8) {
+    if let Some(pos) = bitmask.iter().position(|&ch| ch == b'X') {
         let mut new_bitmask = bitmask.to_owned();
-        new_bitmask[pos] = '0' as u8;
+        new_bitmask[pos] = b'0';
         result.append(&mut bitmask_variation(&new_bitmask));
-        new_bitmask[pos] = '1' as u8;
+        new_bitmask[pos] = b'1';
         result.append(&mut bitmask_variation(&new_bitmask));
     } else {
         let mut bitmask_ones = 0u64;
@@ -114,7 +114,7 @@ fn read_input<R: BufRead>(reader: R) -> Vec<ProgramChunk> {
                         bitmask_ones <<= 1;
                     }
                     '0' => {
-                        bitmask_zeroes = bitmask_zeroes << 1;
+                        bitmask_zeroes <<= 1;
                         bitmask_ones <<= 1;
                     }
                     '1' => {
