@@ -54,8 +54,8 @@ fn apply_with_variations(num: u64, bitmask: &[u8]) -> Vec<u64> {
         .zip(bitmask)
         .map(|(ch, b)| match *b as char {
             '0' => ch as u8,
-            '1' => '1' as u8,
-            'X' => 'X' as u8,
+            '1' => b'1',
+            'X' => b'X',
             _ => panic!("fiasco"),
         })
         .collect::<Vec<_>>();
