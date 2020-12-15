@@ -45,7 +45,7 @@ fn find_nth_result(numbers: &[u32], end_turn: u32) -> u32 {
 
 fn read_numbers<R: BufRead>(reader: R) -> Vec<u32> {
     reader.lines().filter_map(Result::ok).collect::<Vec<_>>()[0]
-        .split(",")
+        .split(',')
         .map(|num| num.parse().unwrap())
         .collect()
 }
