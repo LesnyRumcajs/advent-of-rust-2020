@@ -26,7 +26,7 @@ fn find_nth_result(numbers: &[u32], end_turn: u32) -> u32 {
     let mut last_num = 0;
     let mut turn = numbers.len() as u32 + 1;
 
-    loop {
+    while turn != end_turn {
         if let Some(last_occurence) = num_occurences.get_mut(&last_num) {
             last_num = turn - *last_occurence;
             *last_occurence = turn;
@@ -36,9 +36,6 @@ fn find_nth_result(numbers: &[u32], end_turn: u32) -> u32 {
         }
 
         turn += 1;
-        if turn == end_turn {
-            break;
-        }
     }
     last_num
 }
