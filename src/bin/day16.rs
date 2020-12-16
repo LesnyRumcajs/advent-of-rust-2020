@@ -12,6 +12,12 @@ struct Rule {
     second: (u32, u32),
 }
 
+impl Rule {
+    fn is_valid(&self, num: u32) -> bool {
+        num >= self.first.0 && num <= self.first.1 || num >= self.second.0 && num <= self.second.1
+    }
+}
+
 #[derive(Clone, Debug)]
 struct Input {
     rules: Vec<Rule>,
@@ -30,9 +36,7 @@ impl Input {
                 for num in ticket {
                     let mut valid = false;
                     for rule in self.rules.iter() {
-                        if *num >= rule.first.0 && *num <= rule.first.1
-                            || *num >= rule.second.0 && *num <= rule.second.1
-                        {
+                        if rule.is_valid(*num) {
                             valid = true;
                             break;
                         }
@@ -68,21 +72,13 @@ fn part2(input: &Input) -> u64 {
     all_tickets.push(input.ticket.clone());
 
     let transposed: Vec<Vec<_>> = (0..all_tickets[0].len())
-        .map(|i| {
-            all_tickets
-                .iter()
-                .map(|inner| inner[i].clone())
-                .collect::<Vec<_>>()
-        })
+        .map(|i| all_tickets.iter().map(|inner| inner[i]).collect::<Vec<_>>())
         .collect();
 
     let mut valid_positions: HashMap<String, Vec<u32>> = HashMap::new();
     for (pos, col) in transposed.iter().enumerate() {
         for rule in input.rules.iter() {
-            if col.iter().all(|num| {
-                *num >= rule.first.0 && *num <= rule.first.1
-                    || *num >= rule.second.0 && *num <= rule.second.1
-            }) {
+            if col.iter().all(|num| rule.is_valid(*num)) {
                 let entry = valid_positions
                     .entry(rule.name.clone())
                     .or_insert(Vec::new());
