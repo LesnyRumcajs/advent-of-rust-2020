@@ -24,16 +24,13 @@ impl Equation {
                         }
                     }
                 } else {
-                    while let Some(operator) = operators.pop() {
+                    if let Some(operator) = operators.pop() {
                         if operator == '(' {
                             operators.push('(');
-                            break;
                         } else if operator == '+' {
                             output.push('+');
-                            break;
                         } else {
                             operators.push(operator);
-                            break;
                         }
                     }
                 }
