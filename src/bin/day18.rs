@@ -23,15 +23,13 @@ impl Equation {
                             output.push(operator);
                         }
                     }
-                } else {
-                    if let Some(operator) = operators.pop() {
-                        if operator == '(' {
-                            operators.push('(');
-                        } else if operator == '+' {
-                            output.push('+');
-                        } else {
-                            operators.push(operator);
-                        }
+                } else if let Some(operator) = operators.pop() {
+                    if operator == '(' {
+                        operators.push('(');
+                    } else if operator == '+' {
+                        output.push('+');
+                    } else {
+                        operators.push(operator);
                     }
                 }
                 operators.push(ch);
