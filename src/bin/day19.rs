@@ -1,4 +1,3 @@
-use apply::Apply;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::{
@@ -103,12 +102,7 @@ impl Message {
                                 .collect()
                         })
                 })
-                .collect::<Vec<_>>()
-                .apply(|result| match result {
-                    result if result.is_empty() => vec![None],
-                    result if result.contains(&Some("")) => vec![Some("")],
-                    result => result,
-                }),
+                .collect::<Vec<_>>(),
         }
     }
 }
