@@ -1,3 +1,4 @@
+use apply::Apply;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::{
@@ -5,13 +6,14 @@ use std::{
     io::{self, BufRead},
 };
 
+#[derive(Clone)]
 enum Rule {
     CHAR(char),
     SINGLE(Vec<u32>),
     OR((Vec<u32>, Vec<u32>)),
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 struct Rules {
     rules: HashMap<u32, Rule>,
 }
@@ -64,66 +66,80 @@ struct Message {
 
 impl Message {
     fn validate(&self, rules: &Rules) -> bool {
-        let mut rule = rules.rules.get(&0).unwrap();
-
-        let (valid, count) = Message::validate_chunk(&self.message, rules, rule);
-
-        valid && count == self.message.len()
+        Message::validate_chunk(&self.message, rules, 0).contains(&Some(""))
     }
 
-    fn validate_chunk_single(s: &str, rules: &Rules, subrules: &[u32]) -> (bool, usize) {
-        let mut pos: usize = 0;
-        for subrule_id in subrules.iter() {
-            let subrule = rules.rules.get(subrule_id).unwrap();
-            let (valid, count) = Message::validate_chunk(&s[pos..s.len()], rules, subrule);
-
-            pos += count;
-            if !valid {
-                return (false, pos);
+    fn validate_chunk<'a>(chunk: &'a str, rules: &Rules, rule_id: u32) -> Vec<Option<&'a str>> {
+        match rules.rules[&rule_id] {
+            Rule::CHAR(c) if chunk.starts_with(c) => vec![Some(&chunk[1..])],
+            Rule::CHAR(_) => vec![None],
+            Rule::SINGLE(ref subrules) if subrules.first() == Some(&rule_id) => vec![None],
+            Rule::SINGLE(ref subrules) => {
+                subrules.iter().fold(vec![Some(chunk)], |m, &subrule_id| {
+                    m.iter()
+                        .flat_map(|chunk| match chunk {
+                            Some(chunk) if !chunk.is_empty() => {
+                                Message::validate_chunk(chunk, &rules, subrule_id)
+                            }
+                            _ => vec![None],
+                        })
+                        .collect()
+                })
             }
+            Rule::OR((ref subrules1, ref subrules2)) => [subrules1, subrules2]
+                .iter()
+                .flat_map(|subrules| {
+                    subrules
+                        .iter()
+                        .fold(vec![Some(chunk)], |chunk, &subrule_id| {
+                            chunk
+                                .iter()
+                                .flat_map(|chunk| match chunk {
+                                    Some(chunk) if !chunk.is_empty() => {
+                                        Message::validate_chunk(chunk, &rules, subrule_id)
+                                    }
+                                    _ => vec![None],
+                                })
+                                .collect()
+                        })
+                })
+                .collect::<Vec<_>>()
+                .apply(|result| match result {
+                    result if result.is_empty() => vec![None],
+                    result if result.contains(&Some("")) => vec![Some("")],
+                    result => result,
+                }),
         }
-        return (true, pos);
-    }
-
-    fn validate_chunk(s: &str, rules: &Rules, rule: &Rule) -> (bool, usize) {
-        if let Rule::CHAR(ch) = rule {
-            if let Some(chunk_char) = s.chars().next() {
-                return (chunk_char == *ch, 1);
-            } else {
-                return (false, 1);
-            }
-        } else if let Rule::SINGLE(subrules) = rule {
-            return Message::validate_chunk_single(s, rules, subrules);
-        } else if let Rule::OR((subrules1, subrules2)) = rule {
-            let result1 = Message::validate_chunk_single(s, rules, subrules1);
-            if result1.0 {
-                return result1;
-            }
-            return Message::validate_chunk_single(s, rules, subrules2);
-        }
-        panic!("fiasco");
     }
 }
 
 fn main() {
     let (rules, messages) = read_input(io::stdin().lock());
     println!("Day 19, part 1: {}", part1(&rules, &messages));
-    //println!("Day 19, part 2: {}", part2());
+    println!("Day 19, part 2: {}", part2(&rules, &messages));
 }
 
-fn part1(rules: &Rules, messages: &[Message]) -> u32 {
-    let mut valid_count = 0;
+fn part1(rules: &Rules, messages: &[Message]) -> usize {
+    messages
+        .iter()
+        .filter(|message| message.validate(rules))
+        .count()
+}
+fn part2(rules: &Rules, messages: &[Message]) -> usize {
+    let mut modified_rules = rules.clone();
 
-    for message in messages.iter() {
-        if message.validate(rules) {
-            valid_count += 1;
-        }
+    if let Some(rule) = modified_rules.rules.get_mut(&8) {
+        *rule = Rule::OR((vec![42], vec![42, 8]));
     }
 
-    valid_count
-}
-fn part2() -> i32 {
-    unimplemented!();
+    if let Some(rule) = modified_rules.rules.get_mut(&11) {
+        *rule = Rule::OR((vec![42, 31], vec![42, 11, 31]));
+    }
+
+    messages
+        .iter()
+        .filter(|message| message.validate(&modified_rules))
+        .count()
 }
 
 fn read_input<R: BufRead>(reader: R) -> (Rules, Vec<Message>) {
@@ -152,5 +168,10 @@ mod tests {
     use std::{fs::File, io::BufReader};
 
     #[test]
-    fn test_solution() {}
+    fn test_solution() {
+        let (rules, messages) =
+            read_input(BufReader::new(File::open("inputs/day19/1.txt").unwrap()));
+        assert_eq!(part1(&rules, &messages), 176);
+        assert_eq!(part2(&rules, &messages), 352);
+    }
 }

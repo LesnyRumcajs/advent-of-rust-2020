@@ -16,6 +16,7 @@ itertools = "0.9"
 regex = "1.4"
 lazy_static = "1.4"
 simple-error = "0.2"
+apply = "0.3"
 
 [[bin]]
 name = "day1"
