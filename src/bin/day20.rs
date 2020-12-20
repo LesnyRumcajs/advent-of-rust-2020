@@ -20,7 +20,7 @@ fn main() {
 fn part1(tiles: &[Tile]) -> u64 {
     let mut edges_by_ids: HashMap<u32, Vec<Vec<u8>>> = HashMap::new();
     for tile in tiles.iter() {
-        let edge_upper = tile.data.iter().next().unwrap().clone();
+        let edge_upper = tile.data[0].clone();
         let edge_bottom = tile.data.last().unwrap().clone();
         let edge_left: Vec<_> = tile.data.iter().map(|row| *row.first().unwrap()).collect();
         let edge_right: Vec<_> = tile.data.iter().map(|row| *row.last().unwrap()).collect();
@@ -81,8 +81,7 @@ fn read_tiles<R: BufRead>(reader: R) -> Vec<Tile> {
             }
             current_id = line
                 .split(' ')
-                .skip(1)
-                .next()
+                .nth(1)
                 .unwrap()
                 .replace(":", "")
                 .parse()
