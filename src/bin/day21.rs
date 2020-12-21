@@ -77,7 +77,7 @@ fn part1(foods: &[Food]) -> usize {
     })
 }
 fn part2(foods: &[Food]) -> String {
-    let mut foods: Vec<_> = foods.iter().cloned().collect();
+    let mut foods = foods.to_vec();
     let all_ingredients = foods.iter().fold(HashSet::new(), |all, food| {
         all.union(&food.ingredients).cloned().collect()
     });
@@ -102,7 +102,7 @@ fn part2(foods: &[Food]) -> String {
             }
 
             if ingredients.len() == 1 {
-                let ingredient = ingredients.iter().nth(0).unwrap();
+                let ingredient = ingredients.iter().next().unwrap();
                 ingredients_allergens.insert(ingredient.clone(), allergen.clone());
                 found_any = true;
                 break;
