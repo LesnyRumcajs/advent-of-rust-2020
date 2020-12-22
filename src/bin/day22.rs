@@ -52,12 +52,10 @@ fn play_game(mut deck1: Vec<u32>, mut deck2: Vec<u32>) -> (u32, Vec<u32>) {
                 deck2.iter().take(card2 as usize).copied().collect(),
             )
             .0
+        } else if card1 > card2 {
+            1
         } else {
-            if card1 > card2 {
-                1
-            } else {
-                2
-            }
+            2
         };
 
         if result == 1 {
