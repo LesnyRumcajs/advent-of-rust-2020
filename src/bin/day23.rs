@@ -19,7 +19,7 @@ fn select_destination(current_cup: u32, cup1: u32, cup2: u32, cup3: u32) -> Opti
 
         return Some(target);
     }
-   None
+    None
 }
 
 fn part1(order: &[u32]) -> i32 {
