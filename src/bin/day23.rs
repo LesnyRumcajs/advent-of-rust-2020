@@ -19,7 +19,7 @@ fn select_destination(current_cup: u32, cup1: u32, cup2: u32, cup3: u32) -> Opti
 
         return Some(target);
     }
-    return None;
+   None
 }
 
 fn part1(order: &[u32]) -> i32 {
@@ -86,7 +86,7 @@ fn part2(order: &[u32]) -> u64 {
 fn read_order<R: BufRead>(reader: R) -> Vec<u32> {
     reader
         .lines()
-        .nth(0)
+        .next()
         .unwrap()
         .unwrap()
         .chars()
