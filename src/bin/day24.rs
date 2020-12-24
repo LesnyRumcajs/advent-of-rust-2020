@@ -50,6 +50,8 @@ fn part1(steps: &[Vec<Step>]) -> HashSet<Point> {
     for single_steps in steps.iter() {
         let (mut small_x, mut small_y) = (0, 0);
         for step in single_steps.iter() {
+            // Using doubled coordinates, idea from:
+            // https://www.redblobgames.com/grids/hexagons/#coordinates
             match step {
                 Step::E => small_x += 2,
                 Step::SE => {
